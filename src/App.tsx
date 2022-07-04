@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import './App.css';
 import TodoList, {TaskType} from './TodoList';
 import {v1} from 'uuid';
+import {AddItemForm} from './AddItemForm';
 
 
 // CRUD
@@ -36,7 +37,7 @@ function App() {
         [todoListID1]: [
             {id: v1(), title: 'HTML&CSS', isDone: true},
             {id: v1(), title: 'JS/TS', isDone: true},
-            {id: v1(), title: 'React', isDone: false}
+            {id: v1(), title: 'React', isDone: false},
         ],
         [todoListID2]: [
             {id: v1(), title: 'Meat', isDone: true},
@@ -69,9 +70,18 @@ function App() {
         copyTasks[todoListID] = tasks[todoListID].map(t => t.id === taskID? {...t, isDone: isDone} : t);
         setTasks(copyTasks);
     }
+    const changeTaskTitle = (todoListID: string, taskID: string, title: string) => {
+        const copyTasks = {...tasks};
+        copyTasks[todoListID] = tasks[todoListID].map(t => t.id === taskID? {...t, title: title} : t);
+        setTasks(copyTasks);
+    }
 
     const changeTodoListFilter = (todoListID: string, filter: FilterValuesType) => {
         setTodolists(todoLists.map(t => t.id === todoListID? {...t, filter: filter} : t));
+    }
+
+    const changeTodoListTitle = (todoListID: string, title: string) => {
+        setTodolists(todoLists.map(t => t.id === todoListID? {...t, title: title} : t));
     }
 
     const removeTodolist = (todoListID: string) => {
@@ -79,6 +89,17 @@ function App() {
         const copyTasks = {...tasks};
         delete copyTasks[todoListID];
         setTasks(copyTasks);
+    }
+    
+    const addTodolist = (title: string) => {
+        const newTodoListID = v1();
+        const newTodoList: TodoListType = {
+            id: newTodoListID,
+            title: title,
+            filter: 'all'
+        }
+        setTodolists([newTodoList, ...todoLists]);
+        setTasks({...tasks, [newTodoListID]: []});
     }
 
     // UI:
@@ -95,16 +116,18 @@ function App() {
 
         return (
             <TodoList
-                key = {tl.id}
+                key={tl.id}
                 todoListID={tl.id}
                 title={tl.title}
                 tasks={tasksForRender[tl.id]}
                 addTask={addTask}
                 removeTask={removeTask}
-                changeTodoListFilter={changeTodoListFilter}
+                changeTaskTitle={changeTaskTitle}
                 changeTaskStatus={changeTaskStatus}
-                filter={tl.filter}
                 removeTodolist={removeTodolist}
+                changeTodoListTitle={changeTodoListTitle}
+                changeTodoListFilter={changeTodoListFilter}
+                filter={tl.filter}
             />
         )
     })
@@ -112,6 +135,7 @@ function App() {
 
     return (
         <div className="App">
+            <AddItemForm addItem={addTodolist} />
             {todolistsComponents}
         </div>
     );
