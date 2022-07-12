@@ -1,4 +1,6 @@
 import React, {FC, ChangeEvent, KeyboardEvent, useState} from 'react';
+import {AddCircleOutline} from '@material-ui/icons';
+import {IconButton, TextField} from '@material-ui/core';
 
 type AddItemFormPropsType = {
     addItem: (title: string) => void
@@ -6,11 +8,11 @@ type AddItemFormPropsType = {
 
 export const AddItemForm: FC<AddItemFormPropsType> = ({addItem}) => {
     const [title, setTitle] = useState<string>("");
-    const [error, setError] = useState<boolean>(false);
+    const [error, setError] = useState<string>('');
 
     const onChangeSetTitle = (e: ChangeEvent<HTMLInputElement>) => {
         setTitle(e.currentTarget.value);
-        error && setError(false);
+        error && setError('');
         // e.currentTarget - в данном случае input
     }
 
@@ -19,7 +21,7 @@ export const AddItemForm: FC<AddItemFormPropsType> = ({addItem}) => {
         if (trimmedTitle) {
             addItem(trimmedTitle)
         } else {
-            setError(true)
+            setError('Title is required')
         }
 
         setTitle("");
@@ -31,14 +33,19 @@ export const AddItemForm: FC<AddItemFormPropsType> = ({addItem}) => {
 
     return (
         <div>
-            <input
+            <TextField
+                size={'small'}
+                label={'Title'}
+                variant={'outlined'}
                 value={title}
                 onChange={onChangeSetTitle}
                 onKeyDown={onKeyDownAddItem}
-                className={ error? 'error' : ''}
+                error={!!error}
+                helperText={error}
             />
-            <button onClick={onClickAddItem}>+</button>
-            {error && <div style={{color: "red"}}>Title is required</div>}
+            <IconButton onClick={onClickAddItem} color={'primary'} size={'small'} disabled={!!error}>
+                <AddCircleOutline fontSize={'large'}/>
+            </IconButton>
         </div>
     )
 }

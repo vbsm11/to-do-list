@@ -1,7 +1,9 @@
 import React, {ChangeEvent} from 'react';
-import App, {FilterValuesType} from './App';
+import {FilterValuesType} from './App';
 import {AddItemForm} from './AddItemForm';
 import {EditableSpan} from './EditableSpan';
+import {Button, Checkbox, IconButton} from '@material-ui/core';
+import {Delete, HighlightOff} from '@material-ui/icons';
 // rsc + tab
 
 export type TaskType = {
@@ -40,13 +42,11 @@ const TodoList = (props: TodoListPropsType) => {
                 key={t.id}
                 className={t.isDone ? 'isDone' : ''}
             >
-                <input
-                    onChange={onChangeTaskStatus}
-                    type="checkbox"
-                    checked={t.isDone}
-                />
+                <Checkbox size={'small'} color={'primary'} onChange={onChangeTaskStatus} checked={t.isDone} />
                 <EditableSpan title={t.title} changeTitle={onChangeTaskTitle}/>
-                <button onClick={removeTask}>X</button>
+                <IconButton onClick={removeTask} size={'small'} color={'secondary'}>
+                    <HighlightOff fontSize={'small'}/>
+                </IconButton>
             </li>
         )
     }) :
@@ -75,7 +75,9 @@ const TodoList = (props: TodoListPropsType) => {
         <div>
             <h3>
                 <EditableSpan title={props.title} changeTitle={changeTodoListTitle}/>
-                <button onClick={removeTodolist}>X</button>
+                <IconButton onClick={removeTodolist}>
+                    <Delete/>
+                </IconButton>
             </h3>
 
             <AddItemForm addItem={addTask} />
@@ -83,18 +85,30 @@ const TodoList = (props: TodoListPropsType) => {
                 {tasksJSX}
             </ul>
             <div>
-                <button
-                    className={props.filter === 'all' ? 'active' : ''}
+                <Button
+                    size={'small'}
+                    variant={'contained'}
+                    color={props.filter === 'all' ? 'primary': 'default'}
+                    disableElevation
                     onClick={createOnClickHandler('all')}
-                >All</button>
-                <button
-                    className={props.filter === 'active' ? 'active' : ''}
+                >All
+                </Button>
+                <Button
+                    size={'small'}
+                    variant={'contained'}
+                    color={props.filter === 'active' ? 'primary': 'default'}
+                    disableElevation
                     onClick={createOnClickHandler('active')}
-                >Active</button>
-                <button
-                    className={props.filter === 'completed' ? 'active' : ''}
+                >Active
+                </Button>
+                <Button
+                    size={'small'}
+                    variant={'contained'}
+                    color={props.filter === 'completed' ? 'primary': 'default'}
+                    disableElevation
                     onClick={createOnClickHandler('completed')}
-                >Completed</button>
+                >Completed
+                </Button>
             </div>
         </div>
     );
